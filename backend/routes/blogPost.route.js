@@ -83,5 +83,63 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+//---- lezione 5 
+router.post('/new/with-comment', async (req, res) => {
+  try {
+    const newPost = new BlogPost({
+      category: "categoriaEx",
+      title: "Embedding in MongoDB",
+      author: "Luca Bianchi",
+      content: "MongoDB content",
+      comments: [
+        {
+          authorName: "Giulia Verdi",
+          text: "Ottimo articolo!"
+        }
+      ]
+    });
 
+    const saved = await newPost.save();
+    res.status(201).json(saved);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+//Tutti i commenti di un post
+router.get('/:id/comments', async (req, res) => {
+  const post = await BlogPost.findById(req.params.id);
+  res.json(post.comments);
+});
+
+router.get('/:id/comments/:commentId', async (req, res) => {
+  const post = await BlogPost.findById(req.params.id);
+  const comment = post.comments.id(req.params.commentId);
+  res.json(comment);
+});
+//new com.
+router.post('/:id/comments', async (req, res) => {
+  const post = await BlogPost.findById(req.params.id);
+  post.comments.push(req.body);
+  await post.save();
+  res.json(post.comments);
+})
+
+router.put('/:id/comments/:commentId', async (req, res) => {
+  const post = await BlogPost.findById(req.params.id);
+  const comment = post.comments.id(req.params.commentId);
+  comment.authorName = req.body.authorName;
+  comment.text = req.body.text;
+  await post.save();
+  res.json(comment);
+});
+
+router.delete('/:id/comments/:commentId', async (req, res) => {
+  const post = await BlogPost.findById(req.params.id);
+  post.comments.id(req.params.commentId).remove();
+  await post.save();
+  res.json({ message: "Commento eliminato" });
+});
+//---------------------------------------------------------------
 export default router;

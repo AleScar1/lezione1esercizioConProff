@@ -66,8 +66,7 @@ router.patch("/:id/avatar", uploadAvatar, async (req, res) => {
       console.log(err);
       res.status(500).json({ error: "Errore duranante il caricamento del file" });
     }
-  });
-  
+});
 
-  
+
 export default router;
