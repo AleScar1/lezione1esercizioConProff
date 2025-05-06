@@ -4,7 +4,7 @@ import db from './db.js';
 import cors from "cors";
 import authorsRoutes from "./routes/author.route.js";
 import postsRoutes from "./routes/blogPost.route.js";
-
+import authRoutes from "./routes/auth.js";
 
 const app = express();
 app.use(express.json());
@@ -13,6 +13,7 @@ app.use(cors());
 app.use("/authors", authorsRoutes);
 app.use("/posts", postsRoutes);
 app.use("/blogPosts", postsRoutes)
+app.use("/auth", authRoutes);
 
 db();
 
